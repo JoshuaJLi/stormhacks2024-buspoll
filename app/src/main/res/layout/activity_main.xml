@@ -20,4 +20,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/poopy"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+        </com.google.android.gms.maps.MapView>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

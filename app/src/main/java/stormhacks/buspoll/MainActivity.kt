@@ -1,16 +1,23 @@
 package stormhacks.buspoll
 
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.MapView
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
 class MainActivity : ComponentActivity() {
     private var stopList: ArrayList<Stop> = ArrayList<Stop>()
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    val mapView = findViewById<MapView>(R.id.poopy)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -31,8 +38,20 @@ class MainActivity : ComponentActivity() {
             stopList.add(newStop)
             displayData = displayData + row[4] + "\t" + row[5] + "\n"
         }
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        var txtData = findViewById(R.id.textView) as TextView
-        txtData.text = stopList.toString()
+        fetchLocation()
+//        var txtData = findViewById(R.id.textView) as TextView
+//        txtData.text = stopList.toString()
+    }
+
+    private fun fetchLocation() {
+        val currentLocation = fusedLocationProviderClient.lastLocation
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 101)
+            return
+        }
+
     }
 }
