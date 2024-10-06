@@ -3,7 +3,9 @@ package stormhacks.buspoll
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -13,7 +15,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -64,14 +65,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.poopy) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        fetchLocation()
-//        var txtData = findViewById(R.id.textView) as TextView
-//        txtData.text = stopList.toString()
+        val goButton: Button = findViewById(R.id.getNextBusButton)
+        val stopNumberInput: EditText = findViewById(R.id.stopNumberInputField)
+        goButton.setOnClickListener() {
+            Toast.makeText(this, stopNumberInput.text, Toast.LENGTH_SHORT).show()
+        }
+        getLocationPermissions()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -100,17 +103,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         for (stop in stopList) {
             val newStopLatLng = LatLng(stop.latitude.toDouble(), stop.longitude.toDouble())
-            mMap.addMarker(MarkerOptions().position(newStopLatLng).title(stop.stopName))
+            mMap.addMarker(MarkerOptions().position(newStopLatLng).title(stop.stopNumber + " - " + stop.stopName))
         }
     }
 
-    private fun fetchLocation() {
+    private fun getLocationPermissions() {
         val currentLocation = fusedLocationProviderClient.lastLocation
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 101)
             return
         }
-
     }
 }
